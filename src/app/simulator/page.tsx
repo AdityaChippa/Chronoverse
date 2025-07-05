@@ -254,7 +254,7 @@ export default function SimulatorPage() {
           }
           
           // Mission failure conditions
-          if (newState.fuel <= 0 && newState.altitude < selectedMission.parameters.targetAltitude) {
+          if (newState.fuel <= 0 && selectedMission.parameters.targetAltitude && newState.altitude < selectedMission.parameters.targetAltitude) {
             newState.phase = 'failed';
             addAlert('critical', 'Mission failed: Out of fuel');
             setMissionActive(false);
