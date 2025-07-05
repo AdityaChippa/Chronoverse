@@ -1,4 +1,17 @@
-// Core Types
+// Add this export at the end of your Timeline.tsx file
+// Or replace the entire file with this:
+
+export function Timeline() {
+  return (
+    <div className="timeline-container">
+      {/* Your timeline component code here */}
+      <h2>Timeline Component</h2>
+    </div>
+  );
+}
+
+// If you have a default export, change it to named export:
+// export default Timeline; → export { Timeline };// Core Types
 export interface SpaceEvent {
   id: string;
   title: string;
