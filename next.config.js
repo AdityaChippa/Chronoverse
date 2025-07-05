@@ -8,9 +8,7 @@ const nextConfig = {
     config.externals = [...config.externals, { canvas: 'canvas' }];
     return config;
   },
-  experimental: {
-    serverActions: true,
-  },
+  // Removed experimental.serverActions as it's deprecated
 }
 
 module.exports = nextConfig

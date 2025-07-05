@@ -6,7 +6,7 @@ import { Rocket, Calendar, MapPin, Clock, AlertCircle, TrendingUp, Filter } from
 import PageLayout from '@/components/layout/PageLayout';
 import { Card, Button, LoadingSpinner } from '@/components/ui';
 import { getUpcomingLaunches } from '@/lib/api/astronomyData';
-import { SpaceEvent } from '@/types';
+import { SpaceEvent } from '@/types/spaceEventExtensions';
 
 export default function LaunchesPage() {
   const [launches, setLaunches] = useState<SpaceEvent[]>([]);

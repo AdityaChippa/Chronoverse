@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { EventType } from '@prisma/client';
+import { EventType } from '@/lib/api/types';
 
 export async function GET(request: NextRequest) {
   try {

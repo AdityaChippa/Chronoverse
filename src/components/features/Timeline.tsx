@@ -1,185 +1,227 @@
-'use client';
+// Core Types
+export interface SpaceEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: Date;
+  type: EventType;
+  significance: number;
+  category: string;
+  country?: string;
+  agency?: string;
+  imageUrl?: string;
+  videoUrl?: string;
+  metadata?: Record<string, any>;
+}
 
-import { useRef, useEffect, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Rocket, Calendar, Star, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useEventContext } from '@/contexts/EventContext';
-import { EventCard } from './EventCard';
-import { formatDate } from '@/lib/utils';
+export enum EventType {
+  LAUNCH = 'LAUNCH',
+  LANDING = 'LANDING',
+  DISCOVERY = 'DISCOVERY',
+  MILESTONE = 'MILESTONE',
+  DISASTER = 'DISASTER',
+  OBSERVATION = 'OBSERVATION',
+  ACHIEVEMENT = 'ACHIEVEMENT'
+}
 
-gsap.registerPlugin(ScrollTrigger);
+export interface Mission {
+  id: string;
+  name: string;
+  agency: string;
+  launchDate: Date;
+  endDate?: Date;
+  status: MissionStatus;
+  description: string;
+  objectives: string[];
+  achievements: string[];
+  spacecraft?: string;
+  destination?: string;
+  imageUrl?: string;
+  metadata?: Record<string, any>;
+}
 
-export function Timeline() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const { events } = useEventContext();
+export enum MissionStatus {
+  PLANNED = 'PLANNED',
+  ACTIVE = 'ACTIVE',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+  CANCELLED = 'CANCELLED'
+}
 
-  const years = Array.from(
-    new Set(events.map(e => new Date(e.date).getFullYear()))
-  ).sort((a, b) => b - a);
+export interface Satellite {
+  id: string;
+  noradId: string;
+  name: string;
+  type: string;
+  country: string;
+  launchDate: Date;
+  orbitType: string;
+  altitude?: number;
+  inclination?: number;
+  period?: number;
+  isActive: boolean;
+  tleData?: TLEData;
+  position?: SatellitePosition;
+}
 
-  const eventsByYear = events.reduce((acc, event) => {
-    const year = new Date(event.date).getFullYear();
-    if (!acc[year]) acc[year] = [];
-    acc[year].push(event);
-    return acc;
-  }, {} as Record<number, typeof events>);
+export interface TLEData {
+  line1: string;
+  line2: string;
+  epoch: Date;
+}
 
-  useEffect(() => {
-    if (!timelineRef.current) return;
+export interface SatellitePosition {
+  latitude: number;
+  longitude: number;
+  altitude: number;
+  velocity: number;
+}
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        '.timeline-item',
-        { opacity: 0, x: -50 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: timelineRef.current,
-            start: 'top 80%',
-            end: 'bottom 20%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      );
-    }, timelineRef);
+export interface CelestialBody {
+  id: string;
+  name: string;
+  type: 'planet' | 'moon' | 'asteroid' | 'comet';
+  position: Vector3;
+  radius: number;
+  mass: number;
+  texture?: string;
+  orbit?: OrbitData;
+}
 
-    return () => ctx.revert();
-  }, [selectedYear]);
+export interface OrbitData {
+  semiMajorAxis: number;
+  eccentricity: number;
+  inclination: number;
+  longitudeOfAscendingNode: number;
+  argumentOfPeriapsis: number;
+  meanAnomaly: number;
+  period: number;
+}
 
-  const navigateYear = (direction: 'prev' | 'next') => {
-    const currentIndex = years.indexOf(selectedYear);
-    if (direction === 'prev' && currentIndex < years.length - 1) {
-      setSelectedYear(years[currentIndex + 1]);
-    } else if (direction === 'next' && currentIndex > 0) {
-      setSelectedYear(years[currentIndex - 1]);
-    }
-  };
+export interface Vector3 {
+  x: number;
+  y: number;
+  z: number;
+}
 
-  return (
-    <div ref={containerRef} className="relative">
-      {/* Year Navigation */}
-      <div className="flex items-center justify-between mb-8">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigateYear('prev')}
-          disabled={selectedYear === years[years.length - 1]}
-          className="text-cosmic-grey-400 hover:text-cosmic-cream"
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </Button>
+export interface LunarPhase {
+  phase: string;
+  illumination: number;
+  age: number;
+  distance: number;
+  nextNewMoon: Date;
+  nextFullMoon: Date;
+}
 
-        <motion.h3
-          key={selectedYear}
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="font-display-2 text-cosmic-cream"
-        >
-          {selectedYear}
-        </motion.h3>
+export interface Constellation {
+  id: string;
+  name: string;
+  abbreviation: string;
+  stars: Star[];
+  lines: number[][];
+  mythology: string;
+  bestViewing: string;
+}
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigateYear('next')}
-          disabled={selectedYear === years[0]}
-          className="text-cosmic-grey-400 hover:text-cosmic-cream"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </Button>
-      </div>
+export interface Star {
+  id: string;
+  name: string;
+  position: Vector3;
+  magnitude: number;
+  spectralType: string;
+  distance: number;
+}
 
-      {/* Timeline */}
-      <div ref={timelineRef} className="relative">
-        {/* Vertical Line */}
-        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-cosmic-grey-700" />
+export interface NewsArticle {
+  id: string;
+  title: string;
+  summary: string;
+  content: string;
+  source: string;
+  publishedAt: Date;
+  imageUrl?: string;
+  tags: string[];
+  url: string;
+}
 
-        {/* Events */}
-        <div className="space-y-8">
-          {eventsByYear[selectedYear]?.map((event, index) => (
-            <motion.div
-              key={event.id}
-              className="timeline-item relative flex items-start"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-            >
-              {/* Timeline Dot */}
-              <div className="absolute left-8 w-4 h-4 -translate-x-1/2">
-                <motion.div
-                  className="w-full h-full rounded-full bg-cosmic-cream"
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: index * 0.2 }}
-                />
-                <div className="absolute inset-0 rounded-full bg-cosmic-cream/30 animate-ping" />
-              </div>
+export interface CosmicJournal {
+  id: string;
+  userId: string;
+  title: string;
+  description?: string;
+  isPublic: boolean;
+  entries: JournalEntry[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-              {/* Content */}
-              <div className="ml-16 flex-1">
-                <div className="mb-2 text-cosmic-grey-500 text-sm">
-                  {formatDate(event.date)}
-                </div>
-                <EventCard event={event} variant="compact" />
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
+export interface JournalEntry {
+  id: string;
+  journalId: string;
+  eventId?: string;
+  title: string;
+  content: string;
+  date: Date;
+  imageUrl?: string;
+  event?: SpaceEvent;
+}
 
-      {/* Year Overview */}
-      <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="cosmic-border rounded-lg p-4 text-center"
-        >
-          <Rocket className="h-8 w-8 text-cosmic-cream mx-auto mb-2" />
-          <div className="text-2xl font-bold text-cosmic-grey-100">
-            {eventsByYear[selectedYear]?.filter(e => e.type === 'LAUNCH').length || 0}
-          </div>
-          <div className="text-sm text-cosmic-grey-400">Launches</div>
-        </motion.div>
+export interface Achievement {
+  id: string;
+  type: AchievementType;
+  name: string;
+  description: string;
+  earnedAt: Date;
+  progress?: number;
+  maxProgress?: number;
+}
 
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="cosmic-border rounded-lg p-4 text-center"
-        >
-          <Star className="h-8 w-8 text-cosmic-cream mx-auto mb-2" />
-          <div className="text-2xl font-bold text-cosmic-grey-100">
-            {eventsByYear[selectedYear]?.filter(e => e.significance >= 8).length || 0}
-          </div>
-          <div className="text-sm text-cosmic-grey-400">Major Events</div>
-        </motion.div>
+export enum AchievementType {
+  EXPLORER = 'EXPLORER',
+  RESEARCHER = 'RESEARCHER',
+  VOYAGER = 'VOYAGER',
+  PIONEER = 'PIONEER',
+  COMMANDER = 'COMMANDER',
+  ASTRONOMER = 'ASTRONOMER'
+}
 
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="cosmic-border rounded-lg p-4 text-center"
-        >
-          <Calendar className="h-8 w-8 text-cosmic-cream mx-auto mb-2" />
-          <div className="text-2xl font-bold text-cosmic-grey-100">
-            {eventsByYear[selectedYear]?.length || 0}
-          </div>
-          <div className="text-sm text-cosmic-grey-400">Total Events</div>
-        </motion.div>
+export interface UserPreferences {
+  language: string;
+  voiceEnabled: boolean;
+  hapticEnabled: boolean;
+  soundEnabled: boolean;
+  theme: 'dark' | 'light';
+  notifications: boolean;
+}
 
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="cosmic-border rounded-lg p-4 text-center"
-        >
-          <div className="h-8 w-8 text-cosmic-cream mx-auto mb-2 font-serif text-2xl">∞</div>
-          <div className="text-2xl font-bold text-cosmic-grey-100">
-            {new Set(eventsByYear[selectedYear]?.map(e => e.country).filter(Boolean)).size || 0}
-          </div>
-          <div className="text-sm text-cosmic-grey-400">Countries</div>
-        </motion.div>
-      </div>
-    </div>
-  );
+export interface TimeRange {
+  start: Date;
+  end: Date;
+}
+
+export interface FilterOptions {
+  eventTypes?: EventType[];
+  categories?: string[];
+  agencies?: string[];
+  countries?: string[];
+  dateRange?: TimeRange;
+  significance?: number;
+  searchQuery?: string;
+}
+
+export interface AIResponse {
+  message: string;
+  suggestions?: string[];
+  relatedEvents?: SpaceEvent[];
+  visualData?: any;
+}
+
+export interface ClassroomSession {
+  id: string;
+  classroomId: string;
+  title: string;
+  content: any;
+  participants: string[];
+  isActive: boolean;
+  startedAt: Date;
 }
