@@ -96,7 +96,7 @@ export default function LaunchesPage() {
               <div>
                 <p className="text-gray-400 text-sm">Countries</p>
                 <p className="text-2xl font-bold text-white">
-                  {[...new Set(launches.map(l => l.country))].filter(Boolean).length}
+                  {Array.from(new Set(launches.map(l => l.country))).filter(Boolean).length}
                 </p>
               </div>
               <MapPin className="w-8 h-8 text-cosmic-blue" />
