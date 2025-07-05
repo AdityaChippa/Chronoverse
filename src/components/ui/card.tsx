@@ -1,60 +1,78 @@
-import { cn } from '@/lib/utils';
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'glass' | 'gradient';
-}
+const Card = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "rounded-lg cosmic-border bg-cosmic-grey-900/50 backdrop-blur-sm text-cosmic-grey-100 shadow-sm",
+      className
+    )}
+    {...props}
+  />
+))
+Card.displayName = "Card"
 
-export function Card({ className, variant = 'default', ...props }: CardProps) {
-  return (
-    <div
-      className={cn(
-        'rounded-lg',
-        {
-          'bg-cosmic-grey-900 cosmic-border': variant === 'default',
-          'cosmic-glass cosmic-border': variant === 'glass',
-          'bg-gradient-to-br from-cosmic-purple/20 to-cosmic-pink/20 cosmic-border': variant === 'gradient',
-        },
-        className
-      )}
-      {...props}
-    />
-  );
-}
+const CardHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col space-y-1.5 p-6", className)}
+    {...props}
+  />
+))
+CardHeader.displayName = "CardHeader"
 
-// src/components/ui/button.tsx
-import { cn } from '@/lib/utils';
-import { ButtonHTMLAttributes, forwardRef } from 'react';
+const CardTitle = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h3
+    ref={ref}
+    className={cn(
+      "font-heading-3 text-cosmic-cream leading-none tracking-tight",
+      className
+    )}
+    {...props}
+  />
+))
+CardTitle.displayName = "CardTitle"
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'default' | 'outline' | 'ghost' | 'gradient';
-  size?: 'sm' | 'md' | 'lg' | 'icon';
-}
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-sm text-cosmic-grey-400", className)}
+    {...props}
+  />
+))
+CardDescription.displayName = "CardDescription"
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'default', size = 'md', ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        className={cn(
-          'inline-flex items-center justify-center rounded-lg font-medium transition-cosmic',
-          {
-            // Variants
-            'bg-cosmic-cream text-cosmic-black hover:bg-cosmic-skin-light': variant === 'default',
-            'cosmic-border bg-transparent text-cosmic-cream hover:bg-cosmic-grey-900': variant === 'outline',
-            'bg-transparent text-cosmic-grey-400 hover:text-cosmic-cream hover:bg-cosmic-grey-900': variant === 'ghost',
-            'bg-gradient-to-r from-cosmic-purple to-cosmic-pink text-white hover:opacity-90': variant === 'gradient',
-            // Sizes
-            'px-3 py-1.5 text-sm': size === 'sm',
-            'px-4 py-2 text-base': size === 'md',
-            'px-6 py-3 text-lg': size === 'lg',
-            'h-10 w-10 p-0': size === 'icon',
-          },
-          className
-        )}
-        {...props}
-      />
-    );
-  }
-);
+const CardContent = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+))
+CardContent.displayName = "CardContent"
 
-Button.displayName = 'Button';
+const CardFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center p-6 pt-0", className)}
+    {...props}
+  />
+))
+CardFooter.displayName = "CardFooter"
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
