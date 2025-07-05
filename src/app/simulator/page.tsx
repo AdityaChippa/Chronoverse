@@ -228,7 +228,8 @@ export default function SimulatorPage() {
             newState.score += 500;
           }
           
-          if (newState.altitude > selectedMission.parameters.targetAltitude * 0.9 && 
+          if (selectedMission.parameters.targetAltitude && 
+    newState.altitude > selectedMission.parameters.targetAltitude * 0.9 &&
               newState.phase === 'ascent') {
             newState.phase = 'orbit';
             addAlert('success', 'Orbital insertion successful!');
