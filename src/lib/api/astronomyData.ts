@@ -90,7 +90,6 @@ export async function getUpcomingLaunches(limit: number = 10): Promise<SpaceEven
         category: 'Launch',
         agency: template.agency,
         country: template.location.split(',').pop()?.trim(),
-        details: `Launch window opens at ${launchDate.toLocaleTimeString()}`
       });
     }
 
