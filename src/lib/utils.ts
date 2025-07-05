@@ -61,19 +61,19 @@ export function debounce<T extends (...args: any[]) => any>(
   };
 }
 
+// Replace the throttle function in src/lib/utils.ts with this:
 export function throttle<T extends (...args: any[]) => any>(
   func: T,
   limit: number
-): (...args: Parameters<T>) => void {
-  let inThrottle: boolean;
-  
-  return function executedFunction(...args: Parameters<T>) {
+): T {
+  let inThrottle = false;
+  return function executedFunction(this: any, ...args: Parameters<T>) {
     if (!inThrottle) {
       func.apply(this, args);
       inThrottle = true;
       setTimeout(() => inThrottle = false, limit);
     }
-  };
+  } as T;
 }
 
 export function generateId(): string {
